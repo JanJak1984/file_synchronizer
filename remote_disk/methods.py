@@ -39,7 +39,7 @@ class Remote:
         local_path = os.path.join(path_in_disk, filename)
         remote_path = f"{path_in_remote}/{filename}"
         try:
-            resp = get("{resource}/upload",
+            resp = get(f"{resource}/upload",
                        params={"path": remote_path, "overwrite": "true"}, headers=headers)
             upload_url = resp.json()["href"]
             try:
@@ -57,7 +57,7 @@ class Remote:
         headers = {"Authorization": f"OAuth {token}"}
         remote_path = f"{path_in_remote}/{filename}"
         try:
-            resp = delete("{resource}", params={"path": remote_path},
+            resp = delete(f"{resource}", params={"path": remote_path},
                           headers=headers)
             status_code = resp.status_code
             if status_code == 204:

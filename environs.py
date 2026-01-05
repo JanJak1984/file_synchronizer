@@ -9,7 +9,7 @@ timeout = environ.get('TIMEOUT')
 resource = environ.get('RESOURCE')
 path_in_disk = environ.get('PATH_IN_DISK')
 
-
+print(token, path_in_disk, path_in_remote, timeout, resource)
 
 class CustomError(Exception):
     pass

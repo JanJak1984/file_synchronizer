@@ -6,7 +6,7 @@ from log_settings.settings import logger
 
 
 def syncronize(file_name: str, file_hash: str, remote_files: dict):
-    """ Синхронизирует файл с названием file_name с хешем file_hash с дирректории PATH_IN_DISK в .env,
+    """ Синхронизирует файл с названием file_name с хешем file_hash с директории PATH_IN_DISK в .env,
     информацию о удаленном хранилище берет с  remote_files (ключи-названия файлов, значения-хеши)
     """
     remote_hash = remote_files.pop(file_name, None)
@@ -19,7 +19,7 @@ def loop() -> None:
     while True:
         remote_files = Remote.get_info()
         files = get_files_info()
-        if not (remote_files is None) and not (files is None):
+        if not (remote_files is None):
             for file_name, file_hash in files.items():
                 syncronize(file_name, file_hash, remote_files)
             else:

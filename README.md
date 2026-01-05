@@ -30,7 +30,8 @@
 4) Открыть в браузере https://oauth.yandex.ru/authorize?response_type=code&client_id=CLIENT_ID 
 (вместо CLIENT_ID в ссылке ввести свой ClientID). После этого появится код подтверждения, его следует также запомнить
 5) В командной строке консоли на ПК ввести:
- ```curl -X POST https://oauth.yandex.ru/token \
+ ```
+  curl -X POST https://oauth.yandex.ru/token \
   -d "grant_type=authorization_code" \
   -d "code=ВАШ_КОД_ПОДТВЕРЖДЕНИЯ" \
   -d "client_id=ВАШ_ClientID" \
