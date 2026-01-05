@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 
-from environs import path_in_disk
+from environs import path_in_remote
 from log_settings.settings import logger
 import hashlib
 
@@ -25,15 +25,15 @@ def calc_hash(path: str, algo: str = "md5") -> str:
 
 
 def get_files_info() -> Optional[dict]:
-    """ получает словарь из файлов в указанной папке на диске, в котором ключ-название файла,
-    значение - дата последнего изменения файла """
+    """ получает словарь из файлов в указанной папке на диске, в котором ключ - название файла,
+    значение - его хэш """
     try:
-        path_is_exists(path_in_disk)
+        path_is_exists(path_in_remote)
     except ValueError:
         return None
     files = {}
-    for filename in os.listdir(path_in_disk):
-        filepath = os.path.join(path_in_disk, filename)
+    for filename in os.listdir(path_in_remote):
+        filepath = os.path.join(path_in_remote, filename)
         if os.path.isfile(filepath):
             files[filename] = calc_hash(filepath, 'sha256')
     return files

@@ -1,29 +1,28 @@
 import os.path
 from typing import Optional
 
-from environs import token, path_in_yandex, path_in_disk
+from environs import token, path_in_remote, path_in_disk, resource, CustomError
 from log_settings.settings import logger
 from requests import get, put, delete
 from requests.exceptions import ConnectionError
 
 
-class Yandex:
+class Remote:
 
     @staticmethod
     def get_info() -> Optional[dict]:
         """ Получает информацию о файлах в указанной директории яндекс диска
         в виде словаря, в качестве ключа которого имя файла, а значения-его sha256 хэш"""
         try:
-            response = get(url=f'https://cloud-api.yandex.net/v1/disk/resources?path={path_in_yandex}',
+            response = get(url=f'{resource}?path={path_in_remote}',
                            headers={'Authorization': f'OAuth {token}'},
                            )
             status_code = response.status_code
             if status_code != 200:
-                logger.error(
+                raise CustomError(
                     f"При попытке получения информации на сервере получен статус-код {status_code}."
                     "Возможно указан не верный токен либо папка, которая не существует на сервере"
                 )
-                return None
             else:
                 files = {
                     object_['name']: object_['sha256'] for object_ in response.json().get('_embedded').get('items') if \
@@ -38,9 +37,9 @@ class Yandex:
         """ загружает файл на яндекс диск (в указанную в .env директорию) """
         headers = {"Authorization": f"OAuth {token}"}
         local_path = os.path.join(path_in_disk, filename)
-        remote_path = f"{path_in_yandex}/{filename}"
+        remote_path = f"{path_in_remote}/{filename}"
         try:
-            resp = get("https://cloud-api.yandex.net/v1/disk/resources/upload",
+            resp = get("{resource}/upload",
                        params={"path": remote_path, "overwrite": "true"}, headers=headers)
             upload_url = resp.json()["href"]
             try:
@@ -56,9 +55,9 @@ class Yandex:
     def delete_file(filename: str) -> None:
         """ удаляет файл с именем filename с указанной в .env директории яндекс-диска """
         headers = {"Authorization": f"OAuth {token}"}
-        remote_path = f"{path_in_yandex}/{filename}"
+        remote_path = f"{path_in_remote}/{filename}"
         try:
-            resp = delete("https://cloud-api.yandex.net/v1/disk/resources", params={"path": remote_path},
+            resp = delete("{resource}", params={"path": remote_path},
                           headers=headers)
             status_code = resp.status_code
             if status_code == 204:
